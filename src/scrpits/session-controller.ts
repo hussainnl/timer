@@ -6,6 +6,12 @@ export interface SessionControllerOptions {
     totalSeconds: number;
 }
 
+interface CompleteSessionOptions {
+    addToHistory?: boolean;
+    alertMessage?: string;
+    durationInSeconds?: number;
+}
+
 
 
 export class SessionController {
@@ -67,13 +73,14 @@ export class SessionController {
         this.interval = setInterval(this.tickTimer, 1000);
     }
 
-    completeSession(options ={addToHistory: false, alertMessage: ""}) {
-        const { addToHistory  = false, alertMessage = "" } = options;
+    completeSession(options: CompleteSessionOptions = {}) {
+        const { addToHistory = false, alertMessage = "", durationInSeconds = 0 } = options;
         const sessionName =
             this.activeSessionName || this.elements.sessionNameInput.value.trim() || "جلسة بدون اسم";
+        const savedDuration = durationInSeconds > 0 ? durationInSeconds : this.initialDuration;
 
-        if (addToHistory && this.initialDuration > 0) {
-            this.ui.addSessionToHistory(sessionName, this.initialDuration);
+        if (addToHistory && savedDuration > 0) {
+            this.ui.addSessionToHistory(sessionName, savedDuration);
         }
 
         this.resetState();
@@ -140,7 +147,27 @@ export class SessionController {
             return;
         }
 
-        this.completeSession({ addToHistory: true, alertMessage: "تم إنهاء الجلسة." });
+        const elapsedSeconds = this.initialDuration - this.totalSeconds;
+
+        if (elapsedSeconds <= 0) {
+            this.completeSession({ alertMessage: "تم إنهاء الجلسة." });
+            return;
+        }
+
+        const shouldSaveElapsedTime = confirm(
+            `تم إنهاء الجلسة قبل اكتمالها.\nهل تريد حفظ الوقت المقضي فقط؟\n${this.ui.formatSessionDuration(elapsedSeconds)}`
+        );
+
+        if (shouldSaveElapsedTime) {
+            this.completeSession({
+                addToHistory: true,
+                alertMessage: "تم حفظ الوقت المقضي من الجلسة.",
+                durationInSeconds: elapsedSeconds,
+            });
+            return;
+        }
+
+        this.completeSession({ alertMessage: "تم إلغاء الجلسة بدون حفظ." });
     }
 
     initialize() {
