@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تايمر</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-6">
+    <main class="w-full max-w-3xl rounded-[32px] border border-slate-700 bg-slate-900/95 p-8 shadow-2xl backdrop-blur-sm">
+        <h1 class="mb-6 text-center text-4xl font-extrabold text-teal-300">تايمر العد التنازلي</h1>
+
+        <section class="grid gap-4 rounded-3xl bg-slate-800/80 p-6 shadow-inner shadow-slate-950/20">
+            <div class="mx-auto w-full max-w-2xl rounded-3xl border border-teal-400/20 bg-slate-950/80 p-3 shadow-lg shadow-slate-950/30">
+                <input type="text" id="session-name" placeholder="اسم الجلسة" class="w-full rounded-2xl bg-slate-950/70 px-4 py-4 text-center text-3xl font-semibold text-teal-200 outline-none placeholder:text-teal-200">
+            </div>
+
+            <div id="input-panel" class="mx-auto flex min-h-[140px] w-full max-w-2xl items-center justify-center rounded-3xl border border-teal-400/20 bg-slate-950/80 px-6 py-7 shadow-lg shadow-slate-950/30">
+                <div class="grid w-full gap-4 sm:grid-cols-3">
+                    <input type="text" id="hours" min="0" inputmode="numeric" placeholder="0h" class="h-full min-h-[80px] rounded-2xl bg-slate-950/70 px-4 py-3 text-center text-5xl font-semibold text-teal-200 outline-none placeholder:text-teal-200">
+                    <input type="text" id="minutes" min="0" max="59" inputmode="numeric" placeholder="0m" class="h-full min-h-[80px] rounded-2xl bg-slate-950/70 px-4 py-3 text-center text-5xl font-semibold text-teal-200 outline-none placeholder:text-teal-200">
+                    <input type="text" id="seconds" min="0" max="59" inputmode="numeric" placeholder="0s" class="h-full min-h-[80px] rounded-2xl bg-slate-950/70 px-4 py-3 text-center text-5xl font-semibold text-teal-200 outline-none placeholder:text-teal-200">
+                </div>
+            </div>
+
+            <div id="timer" class="mx-auto hidden min-h-[140px] w-full max-w-2xl items-center justify-center rounded-3xl border border-teal-400/20 bg-slate-950/80 px-6 py-7 text-center text-5xl font-semibold tracking-[0.35em] text-teal-200 shadow-lg shadow-slate-950/30">
+                <span id="timer-text" class="block w-full text-center">00h:00m:00s</span>
+            </div>
+
+            <div class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+                <button id="start" class="rounded-3xl bg-teal-500 px-6 py-3 text-base font-semibold text-slate-950 transition hover:bg-teal-400">ابدأ الجلسة</button>
+                <button id="stop" class="rounded-3xl bg-slate-700 px-6 py-3 text-base font-semibold text-slate-100 transition hover:bg-slate-600">توقف الجلسة</button>
+                <button id="reset" class="rounded-3xl bg-slate-700 px-6 py-3 text-base font-semibold text-slate-100 transition hover:bg-slate-600">إعادة تعيين</button>
+                <button id="end-session" class="rounded-3xl bg-rose-500 px-6 py-3 text-base font-semibold text-white transition hover:bg-rose-400">إنهاء الجلسة</button>
+            </div>
+
+            <div class="mx-auto w-full max-w-2xl rounded-3xl border border-slate-700 bg-slate-950/70 p-5 shadow-lg shadow-slate-950/30">
+                <div class="mb-4 flex items-center justify-between">
+                    <h2 class="text-xl font-bold text-teal-200">سجل الجلسات</h2>
+                    <span class="text-sm text-slate-400">الاسم والوقت</span>
+                </div>
+
+                <div id="sessions-empty" class="rounded-2xl border border-dashed border-slate-700 px-4 py-6 text-center text-slate-400">
+                    لا توجد جلسات منتهية بعد
+                </div>
+
+                <div id="sessions-history" class="hidden space-y-3"></div>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="script.js"></script>
+</body>
+
+</html>
