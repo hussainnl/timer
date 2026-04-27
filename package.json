@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "build:ts": "npx tsc --pretty false",
     "build:js": "node build-js.mjs"
   },
   "dependencies": {

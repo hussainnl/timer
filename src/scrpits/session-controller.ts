@@ -1,17 +1,33 @@
+import type { TimerUI, TimerUIElements } from "./ui-helpers.js";
+
+export interface SessionControllerOptions {
+    elements: TimerUIElements;
+    ui: TimerUI;
+    totalSeconds: number;
+}
+
+
 
 export class SessionController {
-    constructor({ elements, ui }) {
-        this.elements = elements;
+
+    private totalSeconds: number;
+    private interval: number | undefined;
+    private initialDuration: number;
+    private hasStarted: boolean;
+    private isPaused: boolean;
+    private activeSessionName: string;
+
+    constructor(private readonly elements: TimerUIElements ,
+        private readonly ui: TimerUI ) {
         this.ui = ui;
-        this.interval = null;
+        this.interval = undefined;
         this.totalSeconds = 0;
         this.initialDuration = 0;
         this.hasStarted = false;
         this.isPaused = false;
         this.activeSessionName = "";
         this.tickTimer = this.tickTimer.bind(this);
-    }
-
+    };
     startSession() {
         this.totalSeconds = this.readDurationFromInputs();
 
@@ -51,8 +67,8 @@ export class SessionController {
         this.interval = setInterval(this.tickTimer, 1000);
     }
 
-    completeSession(options = {}) {
-        const { addToHistory = false, alertMessage = "" } = options;
+    completeSession(options ={addToHistory: false, alertMessage: ""}) {
+        const { addToHistory  = false, alertMessage = "" } = options;
         const sessionName =
             this.activeSessionName || this.elements.sessionNameInput.value.trim() || "جلسة بدون اسم";
 
@@ -69,7 +85,7 @@ export class SessionController {
 
     resetState() {
         clearInterval(this.interval);
-        this.interval = null;
+        this.interval = undefined;
         this.totalSeconds = 0;
         this.initialDuration = 0;
         this.hasStarted = false;
@@ -110,7 +126,7 @@ export class SessionController {
         }
 
         clearInterval(this.interval);
-        this.interval = null;
+        this.interval = undefined;
         this.isPaused = true;
         this.applyControls();
     }

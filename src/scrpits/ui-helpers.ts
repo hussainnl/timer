@@ -1,18 +1,38 @@
+export interface TimerControlsState {
+    hasStarted: boolean;
+    isPaused: boolean;
+}
 
+export interface TimerUIElements {
+    endSessionButton: HTMLButtonElement;
+    hoursInput: HTMLInputElement;
+    inputPanel: HTMLDivElement;
+    minutesInput: HTMLInputElement;
+    placeholderInputs: HTMLInputElement[];
+    resetButton: HTMLButtonElement;
+    secondsInput: HTMLInputElement;
+    sessionNameInput: HTMLInputElement;
+    sessionsEmpty: HTMLDivElement;
+    sessionsHistory: HTMLDivElement;
+    startButton: HTMLButtonElement;
+    stopButton: HTMLButtonElement;
+    timeInputs: HTMLInputElement[];
+    timerElement: HTMLDivElement;
+    timerTextElement: HTMLSpanElement;
+}
 
 export class TimerUI {
-    constructor(elements) {
-        this.elements = elements;
+    constructor(private readonly elements: TimerUIElements) {
         this.sanitizeInput = this.sanitizeInput.bind(this);
         this.hidePlaceholderOnFocus = this.hidePlaceholderOnFocus.bind(this);
         this.restorePlaceholderOnBlur = this.restorePlaceholderOnBlur.bind(this);
     }
 
-    formatTime(value) {
+    formatTime(value: number): string {
         return value.toString().padStart(2, "0");
     }
 
-    formatSessionDuration(durationInSeconds) {
+    formatSessionDuration(durationInSeconds: number): string {
         const hours = Math.floor(durationInSeconds / 3600);
         const minutes = Math.floor((durationInSeconds % 3600) / 60);
         const seconds = durationInSeconds % 60;
@@ -20,27 +40,45 @@ export class TimerUI {
         return `${this.formatTime(hours)}h:${this.formatTime(minutes)}m:${this.formatTime(seconds)}s`;
     }
 
-    sanitizeInput(event) {
-        event.target.value = event.target.value.replace(/\D/g, "");
+    sanitizeInput(event: Event): void {
+        const input = event.target as HTMLInputElement | null;
+
+        if (!input) {
+            return;
+        }
+
+        input.value = input.value.replace(/\D/g, "");
     }
 
-    hidePlaceholderOnFocus(event) {
-        event.target.placeholder = "";
+    hidePlaceholderOnFocus(event: FocusEvent): void {
+        const input = event.target as HTMLInputElement | null;
+
+        if (!input) {
+            return;
+        }
+
+        input.placeholder = "";
     }
 
-    restorePlaceholderOnBlur(event) {
-        if (event.target.value === "") {
-            event.target.placeholder = event.target.dataset.placeholder || "";
+    restorePlaceholderOnBlur(event: FocusEvent): void {
+        const input = event.target as HTMLInputElement | null;
+
+        if (!input) {
+            return;
+        }
+
+        if (input.value === "") {
+            input.placeholder = input.dataset.placeholder || "";
         }
     }
 
-    restoreAllPlaceholders() {
+    restoreAllPlaceholders(): void {
         this.elements.placeholderInputs.forEach((input) => {
             input.placeholder = input.dataset.placeholder || "";
         });
     }
 
-    setupInputEnhancements() {
+    setupInputEnhancements(): void {
         this.elements.placeholderInputs.forEach((input) => {
             input.dataset.placeholder = input.placeholder;
             input.addEventListener("focus", this.hidePlaceholderOnFocus);
@@ -52,29 +90,29 @@ export class TimerUI {
         });
     }
 
-    showTimerView() {
+    showTimerView(): void {
         this.elements.inputPanel.classList.add("hidden");
         this.elements.timerElement.classList.remove("hidden");
         this.elements.timerElement.classList.add("flex");
     }
 
-    showInputView() {
+    showInputView(): void {
         this.elements.timerElement.classList.add("hidden");
         this.elements.timerElement.classList.remove("flex");
         this.elements.inputPanel.classList.remove("hidden");
     }
 
-    renderTimer(totalSeconds) {
+    renderTimer(totalSeconds: number): void {
         this.elements.timerTextElement.textContent = this.formatSessionDuration(totalSeconds);
     }
 
-    setButtonDisabledState(button, isDisabled) {
+    setButtonDisabledState(button: HTMLButtonElement, isDisabled: boolean): void {
         button.disabled = isDisabled;
         button.classList.toggle("opacity-50", isDisabled);
         button.classList.toggle("cursor-not-allowed", isDisabled);
     }
 
-    updateControls(state) {
+    updateControls(state: TimerControlsState): void {
         const { startButton, stopButton, endSessionButton, sessionNameInput } = this.elements;
 
         stopButton.textContent = state.isPaused ? "استئناف الجلسة" : "توقف الجلسة";
@@ -87,7 +125,7 @@ export class TimerUI {
         sessionNameInput.classList.toggle("opacity-70", state.hasStarted);
     }
 
-    resetForm() {
+    resetForm(): void {
         const {
             timerTextElement,
             sessionNameInput,
@@ -104,7 +142,7 @@ export class TimerUI {
         this.restoreAllPlaceholders();
     }
 
-    addSessionToHistory(name, durationInSeconds) {
+    addSessionToHistory(name: string, durationInSeconds: number): void {
         const sessionItem = document.createElement("div");
         const sessionName = document.createElement("p");
         const sessionTime = document.createElement("p");
@@ -122,4 +160,3 @@ export class TimerUI {
         this.elements.sessionsHistory.classList.remove("hidden");
     }
 }
-
