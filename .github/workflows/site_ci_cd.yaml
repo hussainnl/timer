@@ -1,0 +1,43 @@
+name: Site CI/CD
+
+run-name: "${{ github.actor }} deploying timer site"
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  workflow_dispatch:
+
+jobs:
+  deploy-main:
+    if: github.ref == 'refs/heads/main'
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+
+      - name: Stop main stack
+        run: docker compose -p timer_main -f compose_main.yaml down
+
+      - name: Build main stack
+        run: docker compose -p timer_main -f compose_main.yaml build --no-cache
+
+      - name: Start main stack
+        run: docker compose -p timer_main -f compose_main.yaml up -d
+
+  deploy-dev:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: self-hosted
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+
+      - name: Stop dev stack
+        run: docker compose -p timer_dev -f compose_dev.yaml down
+
+      - name: Build dev stack
+        run: docker compose -p timer_dev -f compose_dev.yaml build --no-cache
+
+      - name: Start dev stack
+        run: docker compose -p timer_dev -f compose_dev.yaml up -d

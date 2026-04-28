@@ -1,0 +1,9 @@
+services:
+  timer_site:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: timer_site_dev
+    ports:
+      - "8081:80"
+    restart: unless-stopped
