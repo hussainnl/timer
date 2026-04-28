@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS sessions (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    duration_seconds INTEGER NOT NULL CHECK (duration_seconds > 0),
+    completed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

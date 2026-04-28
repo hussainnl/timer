@@ -1,3 +1,4 @@
+import type { SessionApi } from "./session-api.js";
 import type { TimerUI, TimerUIElements } from "./ui-helpers.js";
 
 export interface SessionControllerOptions {
@@ -24,7 +25,8 @@ export class SessionController {
     private activeSessionName: string;
 
     constructor(private readonly elements: TimerUIElements ,
-        private readonly ui: TimerUI ) {
+        private readonly ui: TimerUI,
+        private readonly sessionApi: SessionApi ) {
         this.ui = ui;
         this.interval = undefined;
         this.totalSeconds = 0;
@@ -74,6 +76,10 @@ export class SessionController {
     }
 
     completeSession(options: CompleteSessionOptions = {}) {
+        void this.completeSessionAsync(options);
+    }
+
+    async completeSessionAsync(options: CompleteSessionOptions = {}) {
         const { addToHistory = false, alertMessage = "", durationInSeconds = 0 } = options;
         const sessionName =
             this.activeSessionName || this.elements.sessionNameInput.value.trim() || "جلسة بدون اسم";
@@ -81,6 +87,12 @@ export class SessionController {
 
         if (addToHistory && savedDuration > 0) {
             this.ui.addSessionToHistory(sessionName, savedDuration);
+
+            try {
+                await this.sessionApi.saveSession(sessionName, savedDuration);
+            } catch (error) {
+                console.error("Failed to save session.", error);
+            }
         }
 
         this.resetState();
@@ -172,5 +184,15 @@ export class SessionController {
 
     initialize() {
         this.applyControls();
+        void this.loadSavedSessions();
+    }
+
+    async loadSavedSessions() {
+        try {
+            const sessions = await this.sessionApi.listSessions();
+            this.ui.renderSessionHistory(sessions);
+        } catch (error) {
+            console.error("Failed to load sessions.", error);
+        }
     }
 }

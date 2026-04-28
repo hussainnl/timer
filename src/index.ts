@@ -1,3 +1,4 @@
+import { SessionApi } from "./scrpits/session-api.js";
 import { SessionController } from "./scrpits/session-controller.js";
 import { TimerUI, type TimerUIElements } from "./scrpits/ui-helpers.js";
 
@@ -46,8 +47,9 @@ const elements: TimerUIElements = {
     timerTextElement,
 };
 
+const sessionApi = new SessionApi();
 const ui = new TimerUI(elements);
-const sessionController = new SessionController( elements, ui );
+const sessionController = new SessionController( elements, ui, sessionApi );
 
 ui.setupInputEnhancements();
 

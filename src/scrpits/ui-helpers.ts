@@ -1,3 +1,5 @@
+import type { SessionRecord } from "./session-api.js";
+
 export interface TimerControlsState {
     hasStarted: boolean;
     isPaused: boolean;
@@ -158,5 +160,19 @@ export class TimerUI {
         this.elements.sessionsHistory.prepend(sessionItem);
         this.elements.sessionsEmpty.classList.add("hidden");
         this.elements.sessionsHistory.classList.remove("hidden");
+    }
+
+    renderSessionHistory(sessions: SessionRecord[]): void {
+        this.elements.sessionsHistory.innerHTML = "";
+
+        if (sessions.length === 0) {
+            this.elements.sessionsHistory.classList.add("hidden");
+            this.elements.sessionsEmpty.classList.remove("hidden");
+            return;
+        }
+
+        sessions.forEach((session) => {
+            this.addSessionToHistory(session.name, session.durationSeconds);
+        });
     }
 }
