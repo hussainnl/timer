@@ -6,9 +6,11 @@ services:
     container_name: nawah_monolith
     networks:
       - nawah
+
     ports:
-      - "8080:80" # Frontend
       - "3000:3000" # Backend API
+    volumes:
+      - ./data:/app/data
     restart: unless-stopped
 
 networks:
