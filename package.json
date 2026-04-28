@@ -1,8 +1,11 @@
 {
   "scripts": {
     "build:css": "npx @tailwindcss/cli -i ./src/css/input.css -o ./src/css/output.css --minify",
-    "build:ts": "npx tsc --pretty false",
+    "build:ts": "tsc --pretty false",
     "build": "npm run build:css && npm run build:ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.2.4",
