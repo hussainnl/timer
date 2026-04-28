@@ -1,17 +1,13 @@
 services:
-  timer_site:
+  # خدمة مؤقتة تبني الـ Frontend وتحطه في الـ Volume
+  timer_site_builder:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: timer_site_main
-    networks:
-      - nawah
-    ports:
-      - "8080:80"
-    depends_on:
-      - timer_api
-    restart: unless-stopped
+    volumes:
+      - shared_dist:/app/dist # مسار مشترك
 
+  # الـ API هيستنى البناء يخلص، وياخد الملفات من الـ Volume
   timer_api:
     build:
       context: .
@@ -21,7 +17,29 @@ services:
       - nawah
     volumes:
       - ./data:/app/data
+      - shared_dist:/path/to/api/dist # مسار الـ dist جوه حاوية الـ API
+    depends_on:
+      timer_site_builder:
+        condition: service_completed_successfully # مش هيشتغل غير لما البناء يخلص بنجاح
     restart: unless-stopped
+
+  # لو الموقع ليه سيرفر منفصل (زي Nginx)
+  timer_site:
+    image: nginx:alpine
+    container_name: timer_site_main
+    networks:
+      - nawah
+    ports:
+      - "8080:80"
+    volumes:
+      - shared_dist:/usr/share/nginx/html # Nginx هيقرا من نفس المجلد
+    depends_on:
+      timer_site_builder:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+volumes:
+  shared_dist:
 
 networks:
   nawah:
