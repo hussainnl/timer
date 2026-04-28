@@ -533,6 +533,12 @@
     --tw-outline-style: none;
     outline-style: none;
   }
+  .\[program\:nginx\] {
+    program: nginx;
+  }
+  .\[program\:node\] {
+    program: node;
+  }
   .placeholder\:text-teal-200 {
     &::placeholder {
       color: var(--color-teal-200);
