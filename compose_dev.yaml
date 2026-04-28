@@ -4,6 +4,12 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: timer_site_dev
+    networks:
+      - nawah
     ports:
       - "8081:80"
     restart: unless-stopped
+
+networks:
+  nawah:
+    external: true
