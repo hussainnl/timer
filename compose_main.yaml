@@ -6,7 +6,6 @@ services:
     container_name: nawah_monolith
     networks:
       - nawah
-
     ports:
       - "3000:3000" # Backend API
     volumes:
