@@ -7,18 +7,7 @@ services:
     networks:
       - nawah
     ports:
-      - "8081:80"
-    depends_on:
-      - timer_api
-    restart: unless-stopped
-
-  timer_api:
-    build:
-      context: .
-      dockerfile: Dockerfile.api
-    container_name: timer_api_dev
-    networks:
-      - nawah
+      - "3001:3000"
     volumes:
       - ./data:/app/data
     restart: unless-stopped
